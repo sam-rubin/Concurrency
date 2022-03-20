@@ -1,0 +1,93 @@
+import java.util.concurrent.CountDownLatch;
+
+public class CountDownLatchTester {
+
+	
+	
+	public static void main(String[] args) throws InterruptedException{
+	
+		
+		CountDownLatch latch = new CountDownLatch(2);
+		
+		
+		Worker worker =	new Worker(latch);
+		worker.start();
+		Worker workerOne =	new Worker(latch);
+		workerOne.start();
+		
+		DependentThread thread = new DependentThread(latch);
+		thread.start();
+		
+		latch.await();
+		
+		System.out.println("Await Method is completed for main thread");
+		
+		
+		
+	}
+}
+	
+	
+	
+	 class DependentThread extends Thread{
+		
+		
+		CountDownLatch countDownLatch;
+		
+		public DependentThread(CountDownLatch countDownLatch) {
+			this.countDownLatch = countDownLatch; 
+		}
+		
+		@Override
+		public void run() {
+		
+			
+			try {
+				System.out.println(" await method is invoked in the DependentThread");
+				countDownLatch.await();
+				System.out.println("After await method completed for dependent thread");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				
+			}
+			
+		
+		}
+		
+		
+	}
+	
+	
+	
+	class Worker extends Thread{
+		CountDownLatch countDownLatch;
+		
+		public Worker(CountDownLatch countDownLatch) {
+			this.countDownLatch = countDownLatch; 
+		}
+		
+		@Override
+		public void run() {
+			
+			
+			
+			
+			System.out.println("Inside the worker thread "+Thread.currentThread().getName());
+			
+			try {
+				System.out.println("Before Releasing the countdown latch, current state is "+countDownLatch.getCount());
+
+				Thread.sleep(2000);
+			
+				countDownLatch.countDown();
+				System.out.println("Releasing the countdown latch, current state is "+countDownLatch.getCount());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				
+			}
+			
+			
+			
+		}
+	}
+	
