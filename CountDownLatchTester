@@ -18,9 +18,7 @@ public class CountDownLatchTester {
 		DependentThread thread = new DependentThread(latch);
 		thread.start();
 		
-		latch.await();
 		
-		System.out.println("Await Method is completed for main thread");
 		
 		
 		
